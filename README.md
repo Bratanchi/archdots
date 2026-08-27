@@ -8,11 +8,11 @@
   <tr>
     <td width="50%" align="center">
       <b>Рабочее пространство & Терминал</b><br/>
-      <img src="assets/screenshot1.png" alt="Workspace" width="100%"/>
+      <img src="assets/screenshot2.png" alt="Workspace" width="100%"/>
     </td>
     <td width="50%" align="center">
       <b>Экран блокировки (Hyprlock)</b><br/>
-      <img src="assets/screenshot2.png" alt="Lockscreen" width="100%"/>
+      <img src="assets/screenshot1.png" alt="Lockscreen" width="100%"/>
     </td>
   </tr>
 </table>
