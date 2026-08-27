@@ -1,0 +1,2 @@
+# archdots
+minmal rice hyprland
