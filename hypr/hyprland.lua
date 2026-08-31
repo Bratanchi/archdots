@@ -39,8 +39,8 @@ local terminal    = "kitty"
 local fileManager = "kitty ranger"
 local menu = "rofi -show drun"
 local bluetooth = "blueman-manager"
-local wallpaper = os.getenv("HOME") .. "/.config/rofi/script/wallpapermenu.sh"
-local logout = "wlogout"
+local wallpaper = os.getenv("HOME") .. "/.config/rofi/scripts/wallpapermenu.sh" -- chmod +x wallpapermenu.sh
+local logout = os.getenv("HOME") .. "/.config/rofi/scripts/powermenu.sh" -- chmod +x powermenu.sh
 local browser = "helium-browser"
 
 -------------------
@@ -99,12 +99,12 @@ hl.env("HYPRCURSOR_SIZE", "24")
 hl.config({
     general = {
         gaps_in  = 10,
-        gaps_out = 20,
+        gaps_out = 10,
 
         border_size = 5,
 
         col = {
-            active_border   = { colors = {"rgba(f3f3f3f3)", "rgba(3f3f3f3f)"}, angle = 45 },
+            active_border   = { colors = {"rgba(ff984fee)", "rgba(f77c25ee)"}, angle = 45 },
             inactive_border = "rgba(595959aa)",
         },
 
@@ -372,3 +372,4 @@ hl.window_rule({
     move  = "20 monitor_h-120",
     float = true,
 })
+
