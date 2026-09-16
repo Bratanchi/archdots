@@ -105,6 +105,6 @@ case ${chosen} in
         ;;
     $logout)
 		run_cmd --logout
-		hyprctl dispatch exit
+		command -v hyprshutdown >/dev/null 2>&1 && hyprshutdown || hyprctl dispatch 'hl.dsp.exit()'
         ;;
 esac
