@@ -9,7 +9,7 @@ done | \
 rofi -dmenu -i -p "wallpaper" -markup-rows -width 40 -lines 15 -theme ~/.config/rofi/wallpaper-switcher.rasi | \
 while IFS= read -r selected_wallpaper; do
   if [[ -n "$selected_wallpaper" ]]; then
-    swww img "$wallpaper_dir/$selected_wallpaper" --transition-type=wipe --transition-angle=30 --transition-fps=60 
+    awww img "$wallpaper_dir/$selected_wallpaper" --transition-type=wipe --transition-angle=30 --transition-fps=60 
   fi
 done
 
