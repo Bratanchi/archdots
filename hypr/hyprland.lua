@@ -36,12 +36,15 @@ hl.monitor({
 
 -- Set programs that you use
 local terminal    = "kitty"
-local fileManager = "kitty ranger"
+local fileManager = "nautilus"
 local menu = "rofi -show drun"
 local bluetooth = "blueman-manager"
 local wallpaper = os.getenv("HOME") .. "/.config/rofi/scripts/wallpapermenu.sh" -- chmod +x wallpapermenu.sh
 local logout = os.getenv("HOME") .. "/.config/rofi/scripts/powermenu.sh" -- chmod +x powermenu.sh
-local browser = "helium-browser"
+local browser = "firefox"
+local picker = "hyprpicker -a"
+local cava = "kitty cava"
+local music = "kitty rmpc"
 
 -------------------
 ---- AUTOSTART ----
@@ -56,19 +59,27 @@ hl.on("hyprland.start", function ()
 hl.exec_cmd("waybar")
 hl.exec_cmd("awww-daemon")
 hl.exec_cmd("dunst")
+hl.exec_cmd("systemctl --user start hyprpolkitagent")
+hl.exec_cmd("dbus-update-activation-environment --systemd WAYLAND_DISPLAY XDG_CURRENT_DESKTOP=Hyprland")
+hl.exec_cmd("systemctl --user import-environment WAYLAND_DISPLAY XDG_CURRENT_DESKTOP")
+hl.exec_cmd("hypridle")
+
+-- Перезапуск порталов (ядерный вариант для исключения зависаний приложений)
+hl.exec_cmd("systemctl --user stop xdg-desktop-portal xdg-desktop-portal-hyprland")
+hl.exec_cmd("systemctl --user start xdg-desktop-portal-hyprland")
+
 end)
-
-
-
 -------------------------------
 ---- ENVIRONMENT VARIABLES ----
 -------------------------------
 
 -- See https://wiki.hypr.land/Configuring/Advanced-and-Cool/Environment-variables/
-hl.env("XCURSOR_THEME", "Bibata-Modern-Classic")
+hl.env("XCURSOR_THEME", "Bibata-Modern-Ice")
 hl.env("XCURSOR_SIZE", "24")
-hl.env("HYPRCURSOR_THEME", "Bibata-Modern-Classic")
+hl.env("HYPRCURSOR_THEME", "Bibata-Modern-Ice")
 hl.env("HYPRCURSOR_SIZE", "24")
+hl.env("XDG_CURRENT_DESKTOP", "Hyprland")
+hl.env("XDG_SESSION_TYPE", "wayland")
 
 
 
@@ -99,12 +110,12 @@ hl.env("HYPRCURSOR_SIZE", "24")
 hl.config({
     general = {
         gaps_in  = 10,
-        gaps_out = 10,
+        gaps_out = 7,
 
-        border_size = 5,
+        border_size = 0,
 
         col = {
-            active_border   = { colors = {"rgba(ff984fee)", "rgba(f77c25ee)"}, angle = 45 },
+            active_border   = { colors = {"rgba(e3cf6bee)", "rgba(e3cf6bee)"}, angle = 45 },
             inactive_border = "rgba(595959aa)",
         },
 
@@ -118,11 +129,11 @@ hl.config({
     },
 
     decoration = {
-        rounding       = 10,
+        rounding       = 25,
         rounding_power = 2,
 
         -- Change transparency of focused and unfocused windows
-        active_opacity   = 0.9,
+        active_opacity   = 1.0,
         inactive_opacity = 0.7,
 
         shadow = {
@@ -145,33 +156,30 @@ hl.config({
     },
 })
 
--- Default curves and animations, see https://wiki.hypr.land/Configuring/Advanced-and-Cool/Animations/
-hl.curve("easeOutQuint",   { type = "bezier", points = { {0.23, 1},    {0.32, 1}    } })
-hl.curve("easeInOutCubic", { type = "bezier", points = { {0.65, 0.05}, {0.36, 1}    } })
-hl.curve("linear",         { type = "bezier", points = { {0, 0},       {1, 1}       } })
-hl.curve("almostLinear",   { type = "bezier", points = { {0.5, 0.5},   {0.75, 1}    } })
-hl.curve("quick",          { type = "bezier", points = { {0.15, 0},    {0.1, 1}     } })
+-- Кривые и анимации, см. https://wiki.hypr.land/Configuring/Advanced-and-Cool/Animations/
+hl.curve("easeOutQuint", { type = "bezier", points = { {0.23, 1}, {0.32, 1} } })
+hl.curve("easeInOutCubic", { type = "bezier", points = { {0.65, 0}, {0.35, 1} } })
+hl.curve("linear", { type = "bezier", points = { {0, 0}, {1, 1} } })
+hl.curve("almostLinear", { type = "bezier", points = { { 0.5, 0.5 }, { 0.75, 1.0 } } })
+hl.curve("quick", { type = "bezier", points = { { 0.15, 0 }, { 0.1, 1 } } })
 
--- Default springs
-hl.curve("easy",           { type = "spring", mass = 1, stiffness = 238.1191, dampening = 24.21279333 })
+hl.animation({ leaf = "windows", enabled = true, speed = 5, bezier = "easeOutQuint" })
+hl.animation({ leaf = "windowsIn", enabled = true, speed = 5, bezier = "easeOutQuint", style = "slide" })
+hl.animation({ leaf = "windowsOut", enabled = true, speed = 5, bezier = "easeOutQuint", style = "slide" })
+hl.animation({ leaf = "windowsMove", enabled = true, speed = 4, bezier = "easeOutQuint", style = "slide" })
 
-hl.animation({ leaf = "global",        enabled = true,  speed = 10,   bezier = "default" })
-hl.animation({ leaf = "border",        enabled = true,  speed = 5.39, bezier = "easeOutQuint" })
-hl.animation({ leaf = "windows",       enabled = true,  speed = 4.79, spring = "easy" })
-hl.animation({ leaf = "windowsIn",     enabled = true,  speed = 4.1,  spring = "easy",         style = "popin 87%" })
-hl.animation({ leaf = "windowsOut",    enabled = true,  speed = 1.49, bezier = "linear",       style = "popin 87%" })
-hl.animation({ leaf = "fadeIn",        enabled = true,  speed = 1.73, bezier = "almostLinear" })
-hl.animation({ leaf = "fadeOut",       enabled = true,  speed = 1.46, bezier = "almostLinear" })
-hl.animation({ leaf = "fade",          enabled = true,  speed = 3.03, bezier = "quick" })
-hl.animation({ leaf = "layers",        enabled = true,  speed = 3.81, bezier = "easeOutQuint" })
-hl.animation({ leaf = "layersIn",      enabled = true,  speed = 4,    bezier = "easeOutQuint", style = "fade" })
-hl.animation({ leaf = "layersOut",     enabled = true,  speed = 1.5,  bezier = "linear",       style = "fade" })
-hl.animation({ leaf = "fadeLayersIn",  enabled = true,  speed = 1.79, bezier = "almostLinear" })
-hl.animation({ leaf = "fadeLayersOut", enabled = true,  speed = 1.39, bezier = "almostLinear" })
-hl.animation({ leaf = "workspaces",    enabled = true,  speed = 1.94, bezier = "almostLinear", style = "fade" })
-hl.animation({ leaf = "workspacesIn",  enabled = true,  speed = 1.21, bezier = "almostLinear", style = "fade" })
-hl.animation({ leaf = "workspacesOut", enabled = true,  speed = 1.94, bezier = "almostLinear", style = "fade" })
-hl.animation({ leaf = "zoomFactor",    enabled = true,  speed = 7,    bezier = "quick" })
+-- Границы и затухания (Borders & Fades)
+hl.animation({ leaf = "border", enabled = true, speed = 6, bezier = "easeOutQuint" })
+hl.animation({ leaf = "borderangle", enabled = true, speed = 30, bezier = "linear", style = "loop" })
+hl.animation({ leaf = "fade", enabled = true, speed = 4, bezier = "easeOutQuint" })
+hl.animation({ leaf = "fadeLayers", enabled = true, speed = 4, bezier = "easeOutQuint" })
+
+-- Рабочие столы (Workspaces): строго в стиле slide
+hl.animation({ leaf = "workspaces", enabled = true, speed = 5, bezier = "easeOutQuint", style = "slide" })
+hl.animation({ leaf = "workspacesIn", enabled = true, speed = 5, bezier = "easeOutQuint", style = "slide" })
+hl.animation({ leaf = "workspacesOut", enabled = true, speed = 5, bezier = "easeOutQuint", style = "slide" })
+-- Вертикальный слайд для скрытого пространства (Scratchpad)
+hl.animation({ leaf = "specialWorkspace", enabled = true, speed = 5, bezier = "easeOutQuint", style = "slidevert" })
 
 -- Ref https://wiki.hypr.land/Configuring/Basics/Workspace-Rules/
 -- "Smart gaps" / "No gaps when only"
@@ -270,7 +278,7 @@ local mainMod = "SUPER" -- Sets "Windows" key as main modifier
 hl.bind(mainMod .. " + S", hl.dsp.exec_cmd(terminal))
 local closeWindowBind = hl.bind(mainMod .. " + Q", hl.dsp.window.close())
 -- closeWindowBind:set_enabled(false)
-hl.bind(mainMod .. " + M", hl.dsp.exec_cmd("command -v hyprshutdown >/dev/null 2>&1 && hyprshutdown || hyprctl dispatch 'hl.dsp.exit()'"))
+hl.bind(mainMod .. " + M", hl.dsp.exec_cmd(music))
 hl.bind(mainMod .. " + E", hl.dsp.exec_cmd(fileManager))
 hl.bind(mainMod .. " + W", hl.dsp.window.float({ action = "toggle" }))
 hl.bind(mainMod .. " + A", hl.dsp.exec_cmd(menu))
@@ -278,6 +286,8 @@ hl.bind(mainMod .. " + D", hl.dsp.window.pseudo())
 hl.bind(mainMod .. " + J", hl.dsp.layout("togglesplit"))    -- dwindle only
 hl.bind(mainMod .. " + ALT + B", hl.dsp.exec_cmd(bluetooth))
 hl.bind(mainMod .. " + Print", hl.dsp.exec_cmd("hyprshot -m region"))
+hl.bind(mainMod .. " + SHIFT + W", hl.dsp.exec_cmd(wallpaper))
+hl.bind(mainMod .. " + P", hl.dsp.exec_cmd(picker))
 
 -- Move focus with mainMod + arrow keys
 hl.bind(mainMod .. " + left",  hl.dsp.focus({ direction = "left" }))
@@ -285,8 +295,8 @@ hl.bind(mainMod .. " + right", hl.dsp.focus({ direction = "right" }))
 hl.bind(mainMod .. " + up",    hl.dsp.focus({ direction = "up" }))
 hl.bind(mainMod .. " + down",  hl.dsp.focus({ direction = "down" }))
 hl.bind(mainMod .. " + B", hl.dsp.exec_cmd(browser))
-hl.bind(mainMod .. " + L", hl.dsp.exec_cmd("hyprlock"))
-hl.bind(mainMod .. " + K", hl.dsp.exec_cmd(logout))
+hl.bind(mainMod .. " + L", hl.dsp.exec_cmd(cava))
+hl.bind("CTRL + ALT + DELETE", hl.dsp.exec_cmd(logout))
 
 -- Switch workspaces with mainMod + [0-9]
 -- Move active window to a workspace with mainMod + SHIFT + [0-9]
@@ -372,4 +382,25 @@ hl.window_rule({
     move  = "20 monitor_h-120",
     float = true,
 })
+
+
+-- Правило для Blueman Manager
+hl.window_rule({
+    match = { class = "blueman-manager" },
+    float = true
+})
+
+-- Правило для просмотрщика изображений imv
+hl.window_rule({
+    match = { class = "imv" },
+    float = true
+})
+
+
+-- Включаем размытие для слоя waybar
+hl.layer_rule({
+    match = { namespace = "waybar" },
+    blur = true
+})
+
 
